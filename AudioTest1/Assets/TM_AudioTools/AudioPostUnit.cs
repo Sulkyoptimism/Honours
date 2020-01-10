@@ -1,91 +1,68 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using UnityEngine;
-
+﻿using UnityEngine;
 public class AudioPostUnit : MonoBehaviour
 {
     public bool UseSaveData = false;
-    float[] NewAudio;
-
-    float[] tmp;
-    float[] AudioOut;
     public AudioClip clip;
+
+
+    private AudioClip moddedclip;
+
+    private string PathName = "C:/Users/thorf/Documents/GitHub/Honours/AudioTest1/Assets/TM_AudioTools/AudioSaves";
+    private string ext = ".ogg";
+    private bool goAhead = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        NewAudio = new float[clip.samples * clip.channels];
-        tmp = new float[clip.samples * clip.channels];
-        AudioOut = new float[clip.samples * clip.channels];
-        AudioClip moddedclip= AudioClip.Create("moddedclip", clip.samples, clip.channels, clip
-            .frequency, stream: false);
-        Debug.Log(clip.samples);
+        string name = transform.name + "ModAud";
 
-        if (UseSaveData==true)
+        
+
+        if (UseSaveData == true)
         {
-            LoadFile(AudioOut);
-            moddedclip.SetData(AudioOut, 0);
-            moddedclip.LoadAudioData();
-            Debug.Log("loaded");
+            try
+            {
+                AudioClip moddedclip = Resources.Load<AudioClip>(PathName + name +ext);
+                Debug.Log("loaded");
+                goAhead = true;
+            }
+            catch
+            {
+                Debug.LogError("No File : " + PathName + name + ext);
+            }
+
+            if (goAhead==true)
+            {
+                gameObject.AddComponent<AudioSource>();
+                gameObject.GetComponent<AudioSource>().clip = moddedclip;
+                gameObject.GetComponent<AudioSource>().Play();
+            }
+           
+
         }
         else
         {
-            clip.GetData(tmp, 72115);
-            SaveFile(tmp);
+            SavOgg.Save(name, clip);
             Debug.Log("saved");
+
+            gameObject.AddComponent<AudioSource>();
+            gameObject.GetComponent<AudioSource>().clip = clip;
+            gameObject.GetComponent<AudioSource>().Play();
+
         }
 
-        
-        gameObject.AddComponent<AudioSource>();
-        gameObject.GetComponent<AudioSource>().clip=moddedclip;
-        gameObject.GetComponent<AudioSource>().loop = true;
-        gameObject.GetComponent<AudioSource>().Play();
 
-        Debug.Log(moddedclip.samples);
+
+    }
+
+    void test()
+    {
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-
-    public void SaveFile(float[] s)
-    {
-        string destination = "C:/Users/thorf/Documents/GitHub/Honours/AudioTest1/Assets/TM_AudioTools/AudioSaves" + "/save.dat";
-        //string destination = Application.persistentDataPath + "/save.dat";
-        FileStream file;
-
-        if (File.Exists(destination)) file = File.OpenWrite(destination);
-        else file = File.Create(destination);
-
-        SaveAudioData data = new SaveAudioData(s);
-        BinaryFormatter bf = new BinaryFormatter();
-        bf.Serialize(file, data);
-        file.Close();
-    }
-
-
-    public void LoadFile(float[] o)
-    {
-        string destination = "C:/Users/thorf/Documents/GitHub/Honours/AudioTest1/Assets/TM_AudioTools/AudioSaves" + "/save.dat";
-        FileStream file;
-
-        if (File.Exists(destination)) file = File.OpenRead(destination);
-        else
-        {
-            Debug.LogError("File not found");
-            return;
-        }
-
-        BinaryFormatter bf = new BinaryFormatter();
-        SaveAudioData data = (SaveAudioData)bf.Deserialize(file);
-        file.Close();
-
-        o = data.Modclip;
-
-        }
-
 }

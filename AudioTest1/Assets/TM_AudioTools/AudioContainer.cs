@@ -31,6 +31,8 @@ public class AudioContainer : MonoBehaviour
     [HideInInspector] public bool stop = false;
     [HideInInspector] public bool Active = false;
     [HideInInspector] public bool playing = false;
+    [HideInInspector] public AudioClip clip;
+
 
     // Start is called before the first frame update
     void Start()
@@ -103,8 +105,7 @@ public class AudioContainer : MonoBehaviour
         {
             playing = true;
 
-            //clipswitch
-            //ASource.clip = clip1;
+            clip = clips[Random.Range(0, clips.Length - 1)];
 
 
             //pitchchange
@@ -124,27 +125,27 @@ public class AudioContainer : MonoBehaviour
                     child.gameObject.AddComponent<AudioSource>();
                     child.gameObject.GetComponent<AudioSource>().enabled = true;
                     child.gameObject.GetComponent<AudioSource>().pitch = Pitchmod;
-                    child.gameObject.GetComponent<AudioSource>().clip = clips[Random.Range(0,clips.Length-1)];
+                    child.gameObject.GetComponent<AudioSource>().clip = clip;
                     child.gameObject.GetComponent<AudioSource>().spatialBlend = 1f;
                     child.gameObject.GetComponent<AudioSource>().minDistance = RolloffMin;
                     child.gameObject.GetComponent<AudioSource>().maxDistance = RolloffMax;
+                    child.gameObject.AddComponent<Destructo>();
+                    child.gameObject.GetComponent<Destructo>().delay = clip.length+(clip.length/10);
                     child.gameObject.GetComponent<AudioSource>().Play();
                 }
+                transform.DetachChildren();
             }
             else
             {
                 ASource.pitch = Pitchmod;
-               
+                ASource.clip = clip;
                 ASource.Play();
            
             }
 
             float delay = Random.Range(MinTime, MaxTime);   ///Randomisation of delay between clips in range
             yield return new WaitForSeconds(delay);
-            foreach (Transform child in transform)
-            {
-                Destroy(child.gameObject);
-            }
+           
 
         }
         playing = false;

@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 426514237}
   - component: {fileID: 426514236}
   - component: {fileID: 426514240}
-  - component: {fileID: 426514241}
+  - component: {fileID: 426514242}
   m_Layer: 0
   m_Name: SourceOBJ
   m_TagString: Untagged
@@ -236,8 +236,8 @@ MonoBehaviour:
   PlayAtStart: 0
   ThreeDimensional: 1
   looping: 1
-  MinTime: 3
-  MaxTime: 7
+  MinTime: 1
+  MaxTime: 5
   Pitch: 1
   PitchRand: 0.5
   LocationRandomisation: 1
@@ -248,7 +248,8 @@ MonoBehaviour:
   stop: 0
   Active: 0
   playing: 0
---- !u!114 &426514241
+  clip: {fileID: 0}
+--- !u!114 &426514242
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -257,11 +258,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 426514235}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3bdce34c306a444b90bbb4b9863e268, type: 3}
+  m_Script: {fileID: 11500000, guid: b15d455b00d220145b603157ecd045f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseSaveData: 1
-  clip: {fileID: 8300000, guid: 783d3dc8e6a68c74aa58e25ad79f358c, type: 3}
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &540190584
 GameObject:
   m_ObjectHideFlags: 0
