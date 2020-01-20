@@ -66,11 +66,10 @@
     <Compile Include="Assets\playerlook.cs" />
     <Compile Include="Assets\playermove.cs" />
     <Compile Include="Assets\TM_AudioTools\AudioContainer.cs" />
-    <Compile Include="Assets\TM_AudioTools\AudioPostUnit.cs" />
-    <Compile Include="Assets\TM_AudioTools\CreateScript.cs" />
     <Compile Include="Assets\TM_AudioTools\Destructo.cs" />
-    <Compile Include="Assets\TM_AudioTools\Parameter.cs" />
+    <Compile Include="Assets\TM_AudioTools\Parameter_Test.cs" />
     <Compile Include="Assets\TM_AudioTools\SavOgg.cs" />
+    <Compile Include="Assets\TM_AudioTools\SingleInst.cs" />
     <Compile Include="Assets\TM_AudioTools\TriggerScript.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/thorf/Documents/GitHub/Honours/AudioTest1/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

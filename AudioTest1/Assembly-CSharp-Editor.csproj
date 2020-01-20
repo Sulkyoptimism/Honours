@@ -64,6 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\AudioEventWindow.cs" />
+    <Compile Include="Assets\Editor\CreateScript.cs" />
+    <Compile Include="Assets\Editor\CustomWindow.cs" />
+    <Compile Include="Assets\Editor\Parameter.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>C:/Users/thorf/Documents/GitHub/Honours/AudioTest1/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>

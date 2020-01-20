@@ -9,6 +9,9 @@ public class AudioContainer : MonoBehaviour
     public bool PlayAtStart = true;
     public bool ThreeDimensional = true;
 
+    public Hashtable ManagedVars = new Hashtable();
+
+
     //Looping/repeating
     public bool looping = true;
     public float MinTime = 1.0f;
@@ -19,14 +22,16 @@ public class AudioContainer : MonoBehaviour
     public float PitchRand = 0f;
 
     //location
+    public bool Semisphere = false;
     public bool LocationRandomisation = true;
-    public float MinSpawnDist=5.0f;
-    public float MaxSpawnDist=10.0f;
+    public float MinSpawnDist = 5.0f;
+    public float MaxSpawnDist = 10.0f;
     private GameObject prefab;
 
     //Rolloff
-    public float RolloffMin;
-    public float RolloffMax;
+    public bool ShowRolloff;
+    public float RolloffMin = 5.0f;
+    public float RolloffMax = 10.0f;
 
     [HideInInspector] public bool stop = false;
     [HideInInspector] public bool Active = false;
@@ -38,7 +43,18 @@ public class AudioContainer : MonoBehaviour
     void Start()
     {
 
-        
+        ManagedVars.Add("looping", looping);
+        ManagedVars.Add("MinTime", MinTime);
+        ManagedVars.Add("MaxTime", MaxTime);
+        ManagedVars.Add("Pitch", Pitch);
+        ManagedVars.Add("PitchRand", PitchRand);
+        ManagedVars.Add("LocationRandomisation", LocationRandomisation);
+        ManagedVars.Add("MinSpawnDist", MinSpawnDist);
+        ManagedVars.Add("MaxSpawnDist", MaxSpawnDist);
+        ManagedVars.Add("RolloffMin", RolloffMin);
+        ManagedVars.Add("RolloffMax", RolloffMax);
+
+
         if (LocationRandomisation == true)
         {
             prefab = new GameObject("MagicLoc");
@@ -77,7 +93,7 @@ public class AudioContainer : MonoBehaviour
 
     private void Update()
     {
-        if (Active==true&&playing==false)
+        if (Active == true && playing == false)
         {
             if (looping == true)
             {
@@ -94,14 +110,32 @@ public class AudioContainer : MonoBehaviour
     }
 
 
+    private void OnDrawGizmos()
+    {
 
+        if (ShowRolloff==true && LocationRandomisation==false)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, RolloffMin);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, RolloffMax);
+        }
+        else if (LocationRandomisation == true)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, MinSpawnDist);
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(transform.position, MaxSpawnDist);
+        }
+
+    }
 
     IEnumerator PlayClip()
     {
         print("Coroutine Started");
 
         //makenoise
-        while (stop==false)
+        while (stop == false)
         {
             playing = true;
 
@@ -109,43 +143,58 @@ public class AudioContainer : MonoBehaviour
 
 
             //pitchchange
-            float Pitchmod = Random.Range(Pitch - PitchRand, Pitch + PitchRand);
-            
+            float P1 = (float)ManagedVars["Pitch"];
+            float Pitchmod = Random.Range(P1 - PitchRand, P1 + PitchRand);
+
+
 
             if (LocationRandomisation == true)
             {
-                Vector3 dir = Random.onUnitSphere.normalized;
-                float mag = Random.Range(MinSpawnDist, MaxSpawnDist);
+                Vector3 dir = new Vector3();
+                float mag = Random.Range((float)ManagedVars["MinSpawnDist"], (float)ManagedVars["MaxSpawnDist"]);
+
+                if (Semisphere==true)
+                {
+                    dir= GetPointOnUnitSphereCap(transform.position, 90f);
+                }
+                else
+                {
+                    dir = Random.onUnitSphere.normalized;
+
+                }
                 Vector3 DirMag = dir * mag;
                 Vector3 NewLocation = transform.position + DirMag;
                 Debug.DrawLine(transform.position, NewLocation, Color.green, 3.0f);
-                Instantiate<GameObject>(prefab,NewLocation,Quaternion.Euler(0f,0f,0f),transform);
+                Instantiate<GameObject>(prefab, NewLocation, Quaternion.Euler(0f, 0f, 0f), transform);
                 foreach (Transform child in transform)
                 {
-                    child.gameObject.AddComponent<AudioSource>();
-                    child.gameObject.GetComponent<AudioSource>().enabled = true;
-                    child.gameObject.GetComponent<AudioSource>().pitch = Pitchmod;
-                    child.gameObject.GetComponent<AudioSource>().clip = clip;
-                    child.gameObject.GetComponent<AudioSource>().spatialBlend = 1f;
-                    child.gameObject.GetComponent<AudioSource>().minDistance = RolloffMin;
-                    child.gameObject.GetComponent<AudioSource>().maxDistance = RolloffMax;
-                    child.gameObject.AddComponent<Destructo>();
-                    child.gameObject.GetComponent<Destructo>().delay = clip.length+(clip.length/10);
-                    child.gameObject.GetComponent<AudioSource>().Play();
+                    if (child.name == "MagicLoc(Clone)")
+                    {
+                        var source = child.gameObject.AddComponent<AudioSource>();
+                        source.enabled = true;
+                        source.pitch = Pitchmod;
+                        source.clip = clip;
+                        source.spatialBlend = 1f;
+                        source.minDistance = (float)ManagedVars["RolloffMin"];
+                        source.maxDistance = (float)ManagedVars["RolloffMax"];
+                        source.Play();
+                        var D = child.gameObject.AddComponent<Destructo>();
+                        D.delay = clip.length + (clip.length / 10);
+                    }
                 }
-                transform.DetachChildren();
             }
             else
             {
                 ASource.pitch = Pitchmod;
                 ASource.clip = clip;
                 ASource.Play();
-           
+
             }
 
-            float delay = Random.Range(MinTime, MaxTime);   ///Randomisation of delay between clips in range
+            float delay = Random.Range((float)ManagedVars["MinTime"], (float)ManagedVars["MaxTime"]);   ///Randomisation of delay between clips in range
+            Debug.Log(delay);
             yield return new WaitForSeconds(delay);
-           
+
 
         }
         playing = false;
@@ -161,5 +210,17 @@ public class AudioContainer : MonoBehaviour
             ASource.Play();
             stop = true;
         }
+    }
+
+    public static Vector3 GetPointOnUnitSphereCap(Quaternion targetDirection, float angle)
+    {
+        var angleInRad = Random.Range(0.0f, angle) * Mathf.Deg2Rad;
+        var PointOnCircle = (Random.insideUnitCircle.normalized) * Mathf.Sin(angleInRad);
+        var V = new Vector3(PointOnCircle.x, PointOnCircle.y, Mathf.Cos(angleInRad));
+        return targetDirection * V;
+    }
+    public static Vector3 GetPointOnUnitSphereCap(Vector3 targetDirection, float angle)
+    {
+        return GetPointOnUnitSphereCap(Quaternion.LookRotation(targetDirection), angle);
     }
 }

@@ -7,6 +7,7 @@ public class Destructo : MonoBehaviour
 
     private void Start()
     {
+        transform.parent=null;
         StartCoroutine(Destruct(delay));
     }
 

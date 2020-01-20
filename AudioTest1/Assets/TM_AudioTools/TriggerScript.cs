@@ -5,12 +5,17 @@ using UnityEngine;
 
 public class TriggerScript : MonoBehaviour
 {
-
+    public bool AttachedToParent = false;
     public GameObject TargetOBJ;
     public string Specific_Collider;
 
     private void Start()
     {
+        if (AttachedToParent==true)
+        {
+            TargetOBJ = transform.parent.gameObject;
+
+        }
         gameObject.AddComponent<BoxCollider>().isTrigger = true;
         
 
@@ -31,7 +36,12 @@ public class TriggerScript : MonoBehaviour
             SetInactive();
         }
     }
-    
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(transform.position, transform.localScale );
+    }
 
     void SetActive()
     {
