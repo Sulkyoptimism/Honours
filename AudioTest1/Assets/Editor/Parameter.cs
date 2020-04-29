@@ -11,11 +11,12 @@ public class Parameter : EditorWindow
     UnityEngine.Object Affetee;
     public string[] options = new string[] { "One", "Two", "Three" };
     public int index = 0;
-
+    string[] optionsbar = new string[] { "Object", "Bake", "Layers" };
+    int tab = 0;
     float slider = 0f;
 
     // Add menu item named "My Window" to the Window menu
-    [MenuItem("Window/TM_Audio")]
+    [MenuItem("Window/TM_Audio2")]
     public static void ShowWindow()
     {
         //Show existing window instance. If one doesn't exist, make one.
@@ -25,15 +26,33 @@ public class Parameter : EditorWindow
     void OnGUI()
     {
 
-        GUILayout.Label("ParameterCreator", EditorStyles.boldLabel);
-        myString = EditorGUILayout.TextField("ParameterName", myString);
-        Affetee = EditorGUILayout.ObjectField(Affetee,typeof(object),allowSceneObjects:true);
-        index = EditorGUILayout.Popup(index, options);
-        if (GUILayout.Button("Create"))
-            InstantiatePrimitive();
-        slider = EditorGUILayout.Slider(slider, 0f, 1f);
+        GUILayout.BeginHorizontal();
+        tab = GUILayout.Toolbar(tab, optionsbar);
+        GUILayout.EndHorizontal();
+        Rect R = new Rect(Screen.width / 2 - 400, Screen.height / 2 - 300, 800, 600);
 
-        curve= EditorGUILayout.CurveField(curve);
+
+        switch (tab)
+        {
+            case 0:
+                GUILayout.Label("ParameterCreator", EditorStyles.boldLabel);
+                myString = EditorGUILayout.TextField("ParameterName", myString);
+                Affetee = EditorGUILayout.ObjectField(Affetee, typeof(object), allowSceneObjects: true);
+                index = EditorGUILayout.Popup(index, options);
+                if (GUILayout.Button("Create"))
+                    InstantiatePrimitive();
+                slider = EditorGUILayout.Slider(slider, 0f, 1f);
+
+                curve = EditorGUILayout.CurveField(curve);
+
+                break;
+
+            case 1:
+                GUILayout.Box("a box");
+                break;
+                
+        }
+        
    
 
     }

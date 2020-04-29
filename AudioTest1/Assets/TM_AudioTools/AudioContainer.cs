@@ -42,7 +42,7 @@ public class AudioContainer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
         ManagedVars.Add("looping", looping);
         ManagedVars.Add("MinTime", MinTime);
         ManagedVars.Add("MaxTime", MaxTime);
@@ -155,7 +155,7 @@ public class AudioContainer : MonoBehaviour
 
                 if (Semisphere==true)
                 {
-                    dir= GetPointOnUnitSphereCap(transform.position, 90f);
+                    dir = GetPointOnUnitSphereCap(transform.up,90f);
                 }
                 else
                 {
